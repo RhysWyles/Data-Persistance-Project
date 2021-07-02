@@ -67,7 +67,7 @@ public class MainManager : MonoBehaviour
             }
             if (Input.GetKeyDown(KeyCode.Escape))
             {
-                HighScoreManager.instance.SaveScore();
+                HighScoreManager.instance.SaveHighScores();
 #if UNITY_EDITOR
                 EditorApplication.ExitPlaymode();
 #else
@@ -85,13 +85,7 @@ public class MainManager : MonoBehaviour
 
     public void GameOver()
     {
-        if (m_Points > HighScoreManager.instance.highScore)
-        {
-            HighScoreManager.instance.highScore = m_Points;
-            HighScoreManager.instance.playerName = HighScoreManager.instance.currentPlayerName;
-            HighScoreManager.instance.SaveScore();
-        }
-
+        HighScoreManager.instance.NewScore(m_Points, HighScoreManager.instance.currentPlayerName);
         m_GameOver = true;
         GameOverText.SetActive(true);
     }

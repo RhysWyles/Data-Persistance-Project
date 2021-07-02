@@ -19,7 +19,7 @@ public class HighScoreManager : MonoBehaviour
         instance = this;
         DontDestroyOnLoad(gameObject);
 
-        LoadScore();
+        LoadHighScores();
     }
     #endregion
 
@@ -28,34 +28,69 @@ public class HighScoreManager : MonoBehaviour
     public string playerName;
     public int highScore;
 
-    [System.Serializable]
-    class SaveData
+    [SerializeField]
+    HighScores highScores = new HighScores();
+
+    private void Start()
     {
-        public string playerName;
-        public int highScore;
+       
     }
 
-    public void SaveScore()
+    public void NewScore(int newScore, string name)
     {
-        SaveData data = new SaveData();
-        data.playerName = playerName;
-        data.highScore = highScore;
+        if (highScores != null)
+        {
+            for (int i = 0; i < highScores.highScores.Length; i++)
+            {
+                if (newScore > highScores.highScores[i].highScore)
+                {
+                    Score oldHighScore = highScores.highScores[i];
+                    NewScore(oldHighScore.highScore, oldHighScore.playerName);
+                    highScores.highScores[i].highScore = newScore;
+                    highScores.highScores[i].playerName = currentPlayerName;
+                    SaveHighScores();
+                    Debug.Log("New High Score");
+                    break;
+                }
+            }
+        }
+        else
+        {
+            highScores.highScores[0].playerName = HighScoreManager.instance.currentPlayerName;
+            highScores.highScores[0].highScore = newScore;
+        }
+    }
 
-        string json = JsonUtility.ToJson(data);
+    public void SaveHighScores()
+    {
+        string json = JsonUtility.ToJson(highScores);
 
         File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
     }
 
-    public void LoadScore()
+    public void LoadHighScores()
     {
         string path = Application.persistentDataPath + "/savefile.json";
         if (File.Exists(path))
         {
             string json = File.ReadAllText(path);
-            SaveData data = JsonUtility.FromJson<SaveData>(json);
+            HighScores data = JsonUtility.FromJson<HighScores>(json);
 
-            playerName = data.playerName;
-            highScore = data.highScore;
+            highScores = data;
         }
     }
+
+    [System.Serializable]
+    class Score
+    {
+        public string playerName;
+        public int highScore;
+    }
+
+    [System.Serializable]
+    class HighScores
+    {
+        public Score[] highScores = new Score[5];
+    }
+
 }
