@@ -67,12 +67,7 @@ public class MainManager : MonoBehaviour
             }
             if (Input.GetKeyDown(KeyCode.Escape))
             {
-                HighScoreManager.instance.SaveHighScores();
-#if UNITY_EDITOR
-                EditorApplication.ExitPlaymode();
-#else
-        Application.Quit(); // original code to quit game
-#endif
+                SceneManager.LoadScene(0);
             }
         }
     }
