@@ -85,8 +85,9 @@ public class HighScoreManager : MonoBehaviour
                     Score oldHighScore = highScores.highScores[i];
                     NewScore(oldHighScore.highScore, oldHighScore.playerName);
                     highScores.highScores[i].highScore = newScore;
-                    highScores.highScores[i].playerName = currentPlayerName;
+                    highScores.highScores[i].playerName = name;
                     SaveHighScores();
+                    LoadHighScores();
                     Debug.Log("New High Score");
                     break;
                 }
@@ -115,6 +116,9 @@ public class HighScoreManager : MonoBehaviour
             HighScores data = JsonUtility.FromJson<HighScores>(json);
 
             highScores = data;
+
+            playerName = highScores.highScores[0].playerName;
+            highScore = highScores.highScores[0].highScore;
         }
     }
 
